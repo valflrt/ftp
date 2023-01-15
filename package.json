@@ -1,0 +1,18 @@
+{
+  "name": "ftp",
+  "version": "1.0.0",
+  "description": "A ftp server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "npx nodemon server.js"
+  },
+  "author": "valflrt",
+  "license": "MIT",
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "http": "^0.0.1-security",
+    "mime-types": "^2.1.35",
+    "path": "^0.12.7"
+  }
+}
