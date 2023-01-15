@@ -6,8 +6,8 @@ const config = require("./config.json");
 
 const port = 8000;
 
-const publicPath = config.public;
-const layoutsPath = pp.join(__dirname, config.layoutsPath);
+const serverRoot = config.serverRoot;
+const layoutsPath = pp.join(__dirname, "layouts");
 
 function html(data, layoutName) {
   let doc = fs
@@ -61,13 +61,25 @@ function ellipsis(str, outputLength = 30) {
     : str;
 }
 
+function sortPaths(a, b) {
+  if (!config.sort || config.sort === "dirsFirst") {
+    if (a.isDir && !b.isDir) return -1;
+    if (!a.isDir && b.isDir) return 1;
+    return 0;
+  } else if (config.sort === "filesFirst") {
+    if (a.isDir && !b.isDir) return 1;
+    if (!a.isDir && b.isDir) return -1;
+    return 0;
+  } else if (config.sort === "alphabetical") return 0;
+}
+
 http
   .createServer((req, res) => {
     console.log(`${req.url}`);
 
     try {
       let url = decodeURI(req.url);
-      let path = pp.normalize(pp.join(publicPath, decodeURI(url)));
+      let path = pp.normalize(pp.join(serverRoot, decodeURI(url)));
 
       let pathType = getPathType(path);
       if (pathType === 1) {
@@ -87,8 +99,10 @@ http
                     .map((e) => ({
                       name: e.name,
                       isDir: e.isDirectory(),
-                    })),
+                    }))
+                    .sort(sortPaths),
                 ]
+
                   .map((e) =>
                     el(
                       els(
@@ -103,7 +117,6 @@ http
                       "tr"
                     )
                   )
-                  .filter((e) => !!e)
                   .join(""),
                 "dir"
               ),
