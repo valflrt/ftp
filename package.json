@@ -1,11 +1,11 @@
 {
   "name": "ftp",
   "version": "1.0.0",
-  "description": "A ftp server",
-  "main": "server.js",
+  "description": "A static http server",
+  "main": "src/index.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "npx nodemon server.js"
+    "start": "node src/index.js",
+    "dev": "npx nodemon src/index.js"
   },
   "author": "valflrt",
   "license": "MIT",

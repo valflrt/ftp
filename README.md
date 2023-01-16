@@ -11,6 +11,7 @@ Edit [config.json](./config.json).
 ```ts
 type Config = {
   serverRoot: string;
+  port?: number = 8000;
   sort?: "dirsFirst" | "filesFirst" | "alphabetical" = "dirsFirst";
 };
 ```
