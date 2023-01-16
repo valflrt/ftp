@@ -1,5 +1,5 @@
 {
-  "name": "ftp",
+  "name": "static-http-server",
   "version": "1.0.0",
   "description": "A static http server",
   "main": "src/index.js",
