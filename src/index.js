@@ -65,7 +65,7 @@ http
                     )
                   )
                   .join(""),
-                "dir"
+                "paths"
               ),
             },
             "base"
