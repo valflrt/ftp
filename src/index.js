@@ -2,7 +2,15 @@ const http = require("http"),
   fs = require("fs"),
   p = require("path"),
   mime = require("mime-types"),
-  { getConfig, render, el, els, getPathType, ellipsis } = require("./util");
+  {
+    getConfig,
+    render,
+    el,
+    els,
+    getPathType,
+    ellipsis,
+    prepend,
+  } = require("./util");
 
 const { serverRoot, port, sort } = getConfig();
 
@@ -28,45 +36,42 @@ http
 
       let pathType = getPathType(path);
       if (pathType === 1) {
+        let paths = prepend(
+          fs
+            .readdirSync(path, { withFileTypes: true })
+            .filter((e) => e.isFile() || e.isDirectory())
+            .map((e) => ({
+              name: e.name,
+              isDir: e.isDirectory(),
+            }))
+            .sort(sortPaths),
+          url !== "/" && {
+            name: "..",
+            isDir: true,
+          }
+        )
+          .filter((e) => !!e)
+          .map((e) =>
+            el(
+              els(
+                [
+                  el(ellipsis(e.name, 50), "a", {
+                    href: p.join(encodeURI(url), e.name),
+                  }),
+                  "td",
+                ],
+                [e.isDir ? "directory" : "file", "td"]
+              ).join(""),
+              "tr"
+            )
+          )
+          .join("");
+
         res.writeHead(200, { "Content-Type": "text/html" }).end(
           render(
             {
               title: "Index of " + ellipsis(url),
-              content: render(
-                [
-                  url !== "/"
-                    ? {
-                        name: "..",
-                        isDir: true,
-                      }
-                    : null,
-                  ...fs
-                    .readdirSync(path, { withFileTypes: true })
-                    .filter((e) => e.isFile() || e.isDirectory())
-                    .map((e) => ({
-                      name: e.name,
-                      isDir: e.isDirectory(),
-                    }))
-                    .sort(sortPaths),
-                ]
-                  .filter((e) => !!e)
-                  .map((e) =>
-                    el(
-                      els(
-                        [
-                          el(ellipsis(e.name, 50), "a", {
-                            href: p.join(encodeURI(url), e.name),
-                          }),
-                          "td",
-                        ],
-                        [e.isDir ? "directory" : "file", "td"]
-                      ).join(""),
-                      "tr"
-                    )
-                  )
-                  .join(""),
-                "paths"
-              ),
+              content: render(paths, "paths"),
             },
             "base"
           )
@@ -81,8 +86,8 @@ http
         return res.writeHead(404, { "Content-Type": "text/html" }).end(
           render(
             {
-              title: "404: Not Found",
-              content: render(el("back to /", "a", { href: "/" }), "simple"),
+              title: `404 Not Found (${url})`,
+              content: el("back to /", "a", { href: "/" }),
             },
             "base"
           )
@@ -93,7 +98,7 @@ http
         render(
           {
             title: "Error 500",
-            content: render(`An unknown error occurred`, "simple"),
+            content: `An unknown error occurred`,
           },
           "base"
         )

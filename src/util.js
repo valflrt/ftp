@@ -1,6 +1,11 @@
 const fs = require("fs"),
   p = require("path");
 
+function prepend(array, el) {
+  array.unshift(el);
+  return array;
+}
+
 function getConfig() {
   let config = require("../config.json");
 
@@ -65,4 +70,12 @@ function ellipsis(str, outputLength = 30) {
     : str;
 }
 
-module.exports = { getConfig, render, el, els, getPathType, ellipsis };
+module.exports = {
+  prepend,
+  getConfig,
+  render,
+  el,
+  els,
+  getPathType,
+  ellipsis,
+};
