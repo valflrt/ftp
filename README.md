@@ -1,8 +1,8 @@
-# ftp
+# static http server
 
-A very simple ftp server made with nodejs (http).
+A very simple static http server server made with nodejs (http). It features index pages and correct mime types based on file extension.
 
-> Be careful: It can hurt for your eyes if you look at it for too long.
+> Be careful: It can hurt your eyes if you look at it for too long.
 
 ## Configuration
 
@@ -18,4 +18,4 @@ type Config = {
 
 ## Layouts
 
-It is possible to edit the default layouts. To do so, edit the html files in the [layouts](./layouts/) directory.
+It is possible to edit the default layouts (and style). To do so, edit the html files in the [layouts](./layouts/) directory.
